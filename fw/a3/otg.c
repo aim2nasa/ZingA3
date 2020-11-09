@@ -1,3 +1,5 @@
+#ifdef OTG
+
 #include "Application.h"
 #include "cyu3error.h"
 #include "cyu3system.h"
@@ -6,6 +8,7 @@
 #include "cyu3gpio.h"
 #include "cyu3utils.h"
 #include "cyfxmousedrv.h"
+#include "otg.h"
 
 /* Setup packet buffer for host mode. */
 uint8_t glSetupPkt[CY_FX_HOST_EP0_SETUP_SIZE] __attribute__ ((aligned (32)));
@@ -159,6 +162,18 @@ void CyFxApplnStart ()
         goto enum_error;
     }
 
+    CyU3PDebugPrint (6, "Ep0Buffer========\r\n");
+    for(int i=0;i<32;i++) CyU3PDebugPrint (6,"%x ", glEp0Buffer[i]);
+    CyU3PDebugPrint(6, "\r\n");
+
+	status = CyFxSendSetupRqt(0x00, CY_U3P_USB_SC_SET_CONFIGURATION,
+		1, 0, 0, glEp0Buffer);
+	if (status != CY_U3P_SUCCESS)
+	{
+	    CyU3PDebugPrint (6, "Set configured Error!!\r\n");
+	    goto enum_error;
+	}
+
     /* Identify if this is an HID mouse or MSC device that can be
      * supported. If the device cannot be supported, just disable
      * the port and wait for a new device to be attached. We support
@@ -178,6 +193,13 @@ void CyFxApplnStart ()
             glIsApplnActive = CyTrue;
             return;
         }
+    }
+
+    if(1)	//어떤 값으로 걸러내야 할지 몰라서 무조건 수용한다
+    {
+        CyU3PDebugPrint (6, "ZingA3 detected\r\n");
+        glIsApplnActive = CyTrue;
+        return;
     }
 
     /* We do not support this device. Fall-through to disable the USB port. */
@@ -330,3 +352,5 @@ CyU3PReturnStatus_t CyFxApplnInit (void)
 	/* Since VBATT or VBUS is required for OTG operation enable it. */
 	return CyU3PUsbVBattEnable (CyTrue);
 }
+
+#endif
