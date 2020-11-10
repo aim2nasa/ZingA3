@@ -218,8 +218,13 @@ void DMA_Normal_DataIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PD
 #ifdef DMA_NORMAL_MANUAL
 	{
 		CyU3PReturnStatus_t status = CyU3PDmaChannelCommitBuffer (handle, input->buffer_p.count, 0);
-        if (status != CY_U3P_SUCCESS)
+        if (status != CY_U3P_SUCCESS){
             CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
+        }else{
+    		CyU3PDebugPrint (6, "DMA_Normal_DataIn_Cb->CY_U3P_DMA_CB_PROD_EVENT\n");
+    		for(int i=0;i<input->buffer_p.count;i++) CyU3PDebugPrint (6,"%x ", input->buffer_p.buffer[i]);
+    		CyU3PDebugPrint(6, "\n");
+        }
 	}
 #endif
 		Dma.DataIn_.Count_++;
