@@ -9,6 +9,7 @@
 #include "cyu3utils.h"
 #include "cyfxmousedrv.h"
 #include "otg.h"
+#include "Zing.h"
 
 /* Setup packet buffer for host mode. */
 uint8_t glSetupPkt[CY_FX_HOST_EP0_SETUP_SIZE] __attribute__ ((aligned (32)));
@@ -198,6 +199,7 @@ void CyFxApplnStart ()
     /* Any device is okay for the moment because I don't have enough information yet */
     if(1)
     {
+    	Zing_DataWrite((uint8_t*)"PING ON", strlen("PING ON"));
         CyU3PDebugPrint (6, "Smart phone is detected\r\n");
         glIsApplnActive = CyTrue;
         return;
