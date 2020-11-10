@@ -195,9 +195,10 @@ void CyFxApplnStart ()
         }
     }
 
-    if(1)	//어떤 값으로 걸러내야 할지 몰라서 무조건 수용한다
+    /* Any device is okay for the moment because I don't have enough information yet */
+    if(1)
     {
-        CyU3PDebugPrint (6, "ZingA3 detected\r\n");
+        CyU3PDebugPrint (6, "Smart phone is detected\r\n");
         glIsApplnActive = CyTrue;
         return;
     }
