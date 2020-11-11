@@ -181,6 +181,7 @@ CyFxMouseDriverInit ()
     	CyU3PDebugPrint (4, "CyU3PDmaChannelCreate app_error=%d\r\n",status);
         goto app_error;
     }
+    CyU3PDebugPrint (1, "[CyFxMouseDriverInit] glHostMouseCh=%d(0x%x)\n", glHostMouseCh,glHostMouseCh);
 
     /* Enable EP transfer. In stream mode, the transfer size should be zero. */
     status = CyU3PUsbHostEpSetXfer (glHostMouseEp, CY_U3P_USB_HOST_EPXFER_NORMAL, 0);
