@@ -1,6 +1,6 @@
+#include "phonedrv.h"
 #include "cyu3system.h"
 #include "cyu3os.h"
-#include "cyu3dma.h"
 #include "cyu3error.h"
 #include "cyu3usb.h"
 #include "cyu3usbhost.h"
@@ -12,9 +12,6 @@
 
 uint8_t glInEp = 0;
 uint8_t glOutEp = 0;
-
-CyU3PDmaChannel glDataOutCh;      	/* DMA channel for EP Data OUT */
-CyU3PDmaChannel glDataInCh;       	/* DMA channel for EP Data IN */
 
 void
 PhoneDmaCb (CyU3PDmaChannel *ch,
