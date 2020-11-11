@@ -7,6 +7,8 @@
 #include "cyu3usbotg.h"
 #include "cyu3utils.h"
 #include "otg.h"
+#include "Zing.h"
+#include "dma.h"
 
 uint8_t glInEp = 0;
 uint8_t glOutEp = 0;
@@ -20,6 +22,16 @@ PhoneDmaCb (CyU3PDmaChannel *ch,
         CyU3PDmaCBInput_t *input)
 {
 	CyU3PDebugPrint (4, "PhoneDmaCb buffer(count:%d)\n",input->buffer_p.count);
+
+    if (type == CY_U3P_DMA_CB_PROD_EVENT)
+    {
+    	CyU3PReturnStatus_t status;
+    	if((status=Zing_Transfer_Send(&Dma.DataOut_.Channel_,input->buffer_p.buffer,input->buffer_p.count))!=CY_U3P_SUCCESS) {
+    		CyU3PDebugPrint (1, "[PhoneDmaCb] Zing_Transfer_Send error=0x%x\n",status);
+    	}else{
+    		CyU3PDebugPrint (1, "<");
+    	}
+    }
 }
 
 CyU3PReturnStatus_t
