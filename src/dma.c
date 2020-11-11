@@ -83,6 +83,36 @@ void channelReset(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t da
 	CyU3PUsbFlushEp(dataOut);
 }
 
+void DMA_Sync_DataOut_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PDmaCBInput_t *input)
+{
+	switch (evtype)
+	{
+	case CY_U3P_DMA_CB_PROD_EVENT:
+		CyU3PDebugPrint (6, "DMA_Sync_DataOut_Cb->CY_U3P_DMA_CB_PROD_EVENT, buffer(count:%d,size:%d,status:%d)\n",
+				input->buffer_p.count,input->buffer_p.size,input->buffer_p.status);
+
+		Dma.DataOut_.Count_++;
+		break;
+	default:
+		break;
+	}
+}
+
+void DMA_Sync_DataIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PDmaCBInput_t *input)
+{
+	switch (evtype)
+	{
+	case CY_U3P_DMA_CB_PROD_EVENT:
+		CyU3PDebugPrint (6, "DMA_Sync_DataIn_Cb->CY_U3P_DMA_CB_PROD_EVENT, buffer(count:%d,size:%d,status:%d)\n",
+				input->buffer_p.count,input->buffer_p.size,input->buffer_p.status);
+
+		Dma.DataIn_.Count_++;
+		break;
+	default:
+		break;
+	}
+}
+
 static CyU3PReturnStatus_t DMA_Sync_mode(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut,uint16_t dataBurstLength)
 {
 	CyU3PDmaChannelConfig_t dmaCfg;
@@ -119,7 +149,7 @@ static CyU3PReturnStatus_t DMA_Sync_mode(uint8_t controlIn,uint8_t controlOut,ui
 						CY_U3P_CPU_SOCKET_PROD,
 						CY_U3P_PIB_SOCKET_2,
 						CY_U3P_DMA_CB_PROD_EVENT,
-						0,
+						DMA_Sync_DataOut_Cb,
 						&Dma.DataOut_.Channel_,
 						CY_U3P_DMA_TYPE_MANUAL_OUT));
 
@@ -130,7 +160,7 @@ static CyU3PReturnStatus_t DMA_Sync_mode(uint8_t controlIn,uint8_t controlOut,ui
 						CY_U3P_PIB_SOCKET_3,
 						CY_U3P_CPU_SOCKET_CONS,
 						CY_U3P_DMA_CB_PROD_EVENT,
-						0,
+						DMA_Sync_DataIn_Cb,
 						&Dma.DataIn_.Channel_,
 						CY_U3P_DMA_TYPE_MANUAL_IN));
 
