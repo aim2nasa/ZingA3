@@ -221,9 +221,9 @@ void DMA_Normal_DataIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PD
         if (status != CY_U3P_SUCCESS){
             CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
         }else{
-    		CyU3PDebugPrint (6, "DMA_Normal_DataIn_Cb->CY_U3P_DMA_CB_PROD_EVENT\n");
-    		for(int i=0;i<input->buffer_p.count;i++) CyU3PDebugPrint (6,"%x ", input->buffer_p.buffer[i]);
-    		CyU3PDebugPrint(6, "\n");
+    		CyU3PDebugPrint (6, "DMA_Normal_DataIn_Cb->CY_U3P_DMA_CB_PROD_EVENT(%d)\n",input->buffer_p.count);
+    		//for(int i=0;i<7;i++) CyU3PDebugPrint (6,"%x ", input->buffer_p.buffer[i]);
+    		//CyU3PDebugPrint(6, "\n");
         }
 	}
 #endif
