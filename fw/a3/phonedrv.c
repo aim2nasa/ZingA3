@@ -81,12 +81,12 @@ PhoneDriverInit ()
                 if (glEp0Buffer[offset + 2] & 0x80)
                 {
                 	glInEp = glEp0Buffer[offset + 2];
-                	CyU3PDebugPrint (1, "[DriverInit] glInEp=%d(%x)\n", glInEp,glInEp);
+                	CyU3PDebugPrint (1, "[DriverInit] glInEp=%d(0x%x)\n", glInEp,glInEp);
                 }
                 else
                 {
                 	glOutEp = glEp0Buffer[offset + 2];
-                	CyU3PDebugPrint (1, "[DriverInit] glOutEp=%d(%x)\n", glOutEp,glOutEp);
+                	CyU3PDebugPrint (1, "[DriverInit] glOutEp=%d(0x%x)\n", glOutEp,glOutEp);
                 }
             }
         }
@@ -95,7 +95,7 @@ PhoneDriverInit ()
         offset += glEp0Buffer[offset];
     }
 
-    CyU3PDebugPrint (1, "[DriverInit] glOutEp=%d(%x), glInEp=%d(%x), EpSize=%d\n", glOutEp,glOutEp,glInEp,glInEp,EpSize);
+    CyU3PDebugPrint (1, "[DriverInit] glOutEp=%d(0x%x), glInEp=%d(0x%x), EpSize=%d\n", glOutEp,glOutEp,glInEp,glInEp,EpSize);
 
     /* Add the IN endpoint. */
     CyU3PMemSet ((uint8_t *)&epCfg, 0, sizeof(epCfg));
