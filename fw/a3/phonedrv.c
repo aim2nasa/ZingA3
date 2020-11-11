@@ -148,6 +148,8 @@ PhoneDriverInit ()
     }
 
     /* Create a DMA channel for OUT EP. */
+    dmaCfg.notification = 0;
+    dmaCfg.cb = 0;
     dmaCfg.prodSckId = CY_U3P_CPU_SOCKET_PROD;
     dmaCfg.consSckId = (CyU3PDmaSocketId_t)(CY_U3P_UIB_SOCKET_CONS_0 + (0x0F & glOutEp));
     status = CyU3PDmaChannelCreate (&glDataOutCh, CY_U3P_DMA_TYPE_MANUAL_OUT, &dmaCfg);
