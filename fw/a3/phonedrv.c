@@ -19,13 +19,7 @@ PhoneDmaCb (CyU3PDmaChannel *ch,
         CyU3PDmaCbType_t type,
         CyU3PDmaCBInput_t *input)
 {
-    if (type == CY_U3P_DMA_CB_PROD_EVENT)
-    {
-        CyU3PDebugPrint (4, "PhoneDmaCb buffer(count:%d)\n",input->buffer_p.count);
-
-        /* Discard the current buffer to free it. */
-        CyU3PDmaChannelDiscardBuffer (ch);
-    }
+	CyU3PDebugPrint (4, "PhoneDmaCb buffer(count:%d)\n",input->buffer_p.count);
 }
 
 CyU3PReturnStatus_t
