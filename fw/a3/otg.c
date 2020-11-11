@@ -10,12 +10,15 @@
 #include "cyfxmousedrv.h"
 #include "otg.h"
 #include "Zing.h"
+#include "phonedrv.h"
 
 /* Setup packet buffer for host mode. */
 uint8_t glSetupPkt[CY_FX_HOST_EP0_SETUP_SIZE] __attribute__ ((aligned (32)));
 
 /* Buffer to hold the USB device descriptor. */
 uint8_t glDeviceDesc[32] __attribute__ ((aligned (32)));
+
+uint8_t glHostOwner = CY_FX_HOST_OWNER_NONE;    /* Current owner for the host controller. */
 
 /* USB host stack event callback function. */
 void CyFxHostEventCb (CyU3PUsbHostEventType_t evType, uint32_t evData)
@@ -192,6 +195,7 @@ void CyFxApplnStart ()
         if (status == CY_U3P_SUCCESS)
         {
             glIsApplnActive = CyTrue;
+            glHostOwner = CY_FX_HOST_OWNER_MOUSE_DRIVER;
             return;
         }
     }
@@ -201,8 +205,13 @@ void CyFxApplnStart ()
     {
     	Zing_DataWrite((uint8_t*)"PING ON", strlen("PING ON"));
         CyU3PDebugPrint (6, "Smart phone is detected\r\n");
-        glIsApplnActive = CyTrue;
-        return;
+        status = PhoneDriverInit ();
+        if (status == CY_U3P_SUCCESS)
+        {
+            glIsApplnActive = CyTrue;
+            glHostOwner = CY_FX_HOST_OWNER_PHONE_DRIVER;
+            return;
+        }
     }
 
     /* We do not support this device. Fall-through to disable the USB port. */
@@ -220,11 +229,23 @@ enum_error:
 void CyFxApplnStop ()
 {
 	CyU3PDebugPrint (2, "CyFxApplnStop()\r\n");
-	CyFxMouseDriverDeInit ();
+	switch (glHostOwner)
+	{
+		case CY_FX_HOST_OWNER_MOUSE_DRIVER:
+			CyFxMouseDriverDeInit ();
+			break;
+		case CY_FX_HOST_OWNER_PHONE_DRIVER:
+			PhoneDriverDeInit ();
+			break;
+		default:
+			break;
+	}
 
     /* Remove EP0. and disable the port. */
     CyU3PUsbHostEpRemove (0);
     CyU3PUsbHostPortDisable ();
+
+    glHostOwner = CY_FX_HOST_OWNER_NONE;
 
     /* Clear state variables. */
     glIsApplnActive = CyFalse;

@@ -12,6 +12,9 @@
 #define CY_FX_HOST_EP0_WAIT_TIMEOUT     (5000)          /* EP0 request timeout in clock ticks. */
 #define CY_FX_HOST_PERIPHERAL_ADDRESS   (1)             /* USB host mode peripheral address to be used. */
 #define CY_FX_HOST_DMA_BUF_COUNT        (4)             /* Number of buffers to be allocated for DMA channel. */
+#define CY_FX_HOST_OWNER_NONE           (0)             /* Host controller is not associated with a class driver. */
+#define CY_FX_HOST_OWNER_MOUSE_DRIVER   (1)             /* Host controller associated with mouse driver. */
+#define CY_FX_HOST_OWNER_PHONE_DRIVER   (2)             /* Host controller associated with phone driver. */
 
 void CyFxOtgEventCb (CyU3POtgEvent_t event,uint32_t input);
 CyU3PReturnStatus_t CyFxApplnInit (void);
