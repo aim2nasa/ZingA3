@@ -222,6 +222,12 @@ void ApplicationThread(uint32_t Value)
 				{
 					CyFxApplnStart ();
 					CyU3PDebugPrint (2, "App start completed\r\n");
+
+					/* If following conditions are met, then the phone is successfully initialized.
+					 * it's time to create DMA Channel between PIB-USB */
+					if (glIsApplnActive && HostOwner == CY_FX_HOST_OWNER_PHONE_DRIVER) {
+
+					}
 				}
 				else
 				{
