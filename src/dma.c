@@ -267,8 +267,8 @@ void DMA_Normal_DataIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PD
 		CyU3PDebugPrint (4, "i");
 #ifdef DMA_NORMAL_MANUAL
 	{
-    	for(int i=0;i<input->buffer_p.count;i++) CyU3PDebugPrint (6,"%x ", input->buffer_p.buffer[i]);
-    	CyU3PDebugPrint(6, "\n");
+//    	for(int i=0;i<input->buffer_p.count;i++) CyU3PDebugPrint (6,"%x ", input->buffer_p.buffer[i]);
+//    	CyU3PDebugPrint(6, "\n");
     	if (input->buffer_p.buffer[0]==0x50 &&
     		input->buffer_p.buffer[1]==0x49 &&
     		input->buffer_p.buffer[2]==0x4E &&
