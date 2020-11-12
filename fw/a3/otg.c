@@ -166,7 +166,7 @@ void CyFxApplnStart ()
         goto enum_error;
     }
 
-    CyU3PDebugPrint (6, "full configuration descriptor\r\n");
+    CyU3PDebugPrint (6, "full configuration descriptor(%d)\r\n",length);
     for(int i=0;i<length;i++) CyU3PDebugPrint (6,"%x ", glEp0Buffer[i]);
     CyU3PDebugPrint(6, "\r\n");
 
