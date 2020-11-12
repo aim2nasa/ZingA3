@@ -3,9 +3,14 @@
 
 #include "cyu3dma.h"
 
-uint8_t glInEp;
-uint8_t glOutEp;
-uint16_t EpSize;
+typedef struct PHONEDRV_T
+{
+	uint8_t inEp;
+	uint8_t outEp;
+	uint16_t epSize;
+} PHONEDRV_T;
+
+PHONEDRV_T Phone;
 
 CyU3PReturnStatus_t PhoneDriverInit (void);
 void PhoneDriverDeInit (void);

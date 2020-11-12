@@ -16,7 +16,7 @@ PhoneDriverInit ()
     uint16_t length, size, offset;
     CyU3PReturnStatus_t status;
     CyU3PUsbHostEpConfig_t epCfg;
-    EpSize = glInEp = glOutEp = 0;
+    memset(&Phone,sizeof(Phone),0);
 
     /* Read first four bytes of configuration descriptor to determine
      * the total length. */
@@ -62,18 +62,18 @@ PhoneDriverInit ()
                 		offset+3,glEp0Buffer[offset+3],CY_U3P_USB_EP_BULK);
             }else{
                 /* Retreive the information. */
-                EpSize = CY_U3P_MAKEWORD(glEp0Buffer[offset + 5],glEp0Buffer[offset + 4]);
-                CyU3PDebugPrint (1, "[DriverInit] EpSize=%d\n", EpSize);
+                Phone.epSize = CY_U3P_MAKEWORD(glEp0Buffer[offset + 5],glEp0Buffer[offset + 4]);
+                CyU3PDebugPrint (1, "[DriverInit] EpSize=%d\n", Phone.epSize);
 
                 if (glEp0Buffer[offset + 2] & 0x80)
                 {
-                	glInEp = glEp0Buffer[offset + 2];
-                	CyU3PDebugPrint (1, "[DriverInit] glInEp=%d(0x%x)\n", glInEp,glInEp);
+                	Phone.inEp = glEp0Buffer[offset + 2];
+                	CyU3PDebugPrint (1, "[DriverInit] inEp=%d(0x%x)\n", Phone.inEp,Phone.inEp);
                 }
                 else
                 {
-                	glOutEp = glEp0Buffer[offset + 2];
-                	CyU3PDebugPrint (1, "[DriverInit] glOutEp=%d(0x%x)\n", glOutEp,glOutEp);
+                	Phone.outEp = glEp0Buffer[offset + 2];
+                	CyU3PDebugPrint (1, "[DriverInit] outEp=%d(0x%x)\n", Phone.outEp,Phone.outEp);
                 }
             }
         }
@@ -82,23 +82,23 @@ PhoneDriverInit ()
         offset += glEp0Buffer[offset];
     }
 
-    CyU3PDebugPrint (1, "[DriverInit] glOutEp=%d(0x%x), glInEp=%d(0x%x), EpSize=%d\n", glOutEp,glOutEp,glInEp,glInEp,EpSize);
+    CyU3PDebugPrint (1, "[DriverInit] outEp=%d(0x%x), inEp=%d(0x%x), epSize=%d\n",Phone.outEp,Phone.outEp,Phone.inEp,Phone.inEp,Phone.epSize);
 
     /* Add the IN endpoint. */
     CyU3PMemSet ((uint8_t *)&epCfg, 0, sizeof(epCfg));
     epCfg.type = CY_U3P_USB_EP_BULK;
     epCfg.mult = 1;
-    epCfg.maxPktSize = EpSize;
+    epCfg.maxPktSize = Phone.epSize;
     epCfg.pollingRate = 0;
     /* Since DMA buffer sizes can only be multiple of 16 bytes and
      * also since this is an interrupt endpoint where the max data
      * packet size is same as the maxPktSize field, the fullPktSize
      * has to be a multiple of 16 bytes. */
     //size = ((EpSize + 0x0F) & ~0x0F);
-    size = EpSize;
+    size = Phone.epSize;
     epCfg.fullPktSize = size;
     epCfg.isStreamMode = CyFalse;
-    status = CyU3PUsbHostEpAdd (glInEp, &epCfg);
+    status = CyU3PUsbHostEpAdd (Phone.inEp, &epCfg);
     if (status != CY_U3P_SUCCESS)
     {
         CyU3PDebugPrint (1, "[DriverInit] CyU3PUsbHostEpAdd(glInEp) error\n");
@@ -106,7 +106,7 @@ PhoneDriverInit ()
     }
 
     /* Add the OUT EP. */
-    status = CyU3PUsbHostEpAdd (glOutEp, &epCfg);
+    status = CyU3PUsbHostEpAdd (Phone.outEp, &epCfg);
     if (status != CY_U3P_SUCCESS)
     {
         CyU3PDebugPrint (1, "[DriverInit] CyU3PUsbHostEpAdd(glOutEp) error\n");
@@ -124,21 +124,21 @@ enum_error:
 void
 PhoneDriverDeInit ()
 {
-    if (glInEp != 0)
-    	CyU3PUsbHostEpAbort (glInEp);
+    if (Phone.inEp != 0)
+    	CyU3PUsbHostEpAbort (Phone.inEp);
 
-    if (glOutEp != 0)
-    	CyU3PUsbHostEpAbort (glOutEp);
+    if (Phone.outEp != 0)
+    	CyU3PUsbHostEpAbort (Phone.outEp);
 
-    if (glInEp != 0)
+    if (Phone.inEp != 0)
     {
-        CyU3PUsbHostEpRemove (glInEp);
-        glInEp = 0;
+        CyU3PUsbHostEpRemove (Phone.inEp);
+        Phone.inEp = 0;
     }
 
-    if (glOutEp != 0)
+    if (Phone.outEp != 0)
     {
-        CyU3PUsbHostEpRemove (glOutEp);
-        glOutEp = 0;
+        CyU3PUsbHostEpRemove (Phone.outEp);
+        Phone.outEp = 0;
     }
 }

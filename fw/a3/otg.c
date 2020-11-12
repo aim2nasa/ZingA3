@@ -210,7 +210,7 @@ void CyFxApplnStart ()
         {
             glIsApplnActive = CyTrue;
             glHostOwner = CY_FX_HOST_OWNER_PHONE_DRIVER;
-            CyU3PDebugPrint (6, "Smart phone driver is initialized, OutEp=0x%x, InEp=0x%x, EpSize=%d\n",glOutEp,glInEp,EpSize);
+            CyU3PDebugPrint (6, "Smart phone driver is initialized, OutEp=0x%x, InEp=0x%x, EpSize=%d\n",Phone.outEp,Phone.inEp,Phone.epSize);
             return;
         }
     }
