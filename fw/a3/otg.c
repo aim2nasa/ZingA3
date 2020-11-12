@@ -18,8 +18,6 @@ uint8_t glSetupPkt[CY_FX_HOST_EP0_SETUP_SIZE] __attribute__ ((aligned (32)));
 /* Buffer to hold the USB device descriptor. */
 uint8_t glDeviceDesc[32] __attribute__ ((aligned (32)));
 
-uint8_t glHostOwner = CY_FX_HOST_OWNER_NONE;    /* Current owner for the host controller. */
-
 /* USB host stack event callback function. */
 void CyFxHostEventCb (CyU3PUsbHostEventType_t evType, uint32_t evData)
 {
@@ -73,6 +71,7 @@ void CyFxApplnStart ()
     uint16_t length;
     CyU3PReturnStatus_t status;
     CyU3PUsbHostEpConfig_t epCfg;
+    HostOwner = CY_FX_HOST_OWNER_NONE;    /* Current owner for the host controller. */
 
 	CyU3PDebugPrint (2, "CyFxApplnStart()\r\n");
 
@@ -195,7 +194,7 @@ void CyFxApplnStart ()
         if (status == CY_U3P_SUCCESS)
         {
             glIsApplnActive = CyTrue;
-            glHostOwner = CY_FX_HOST_OWNER_MOUSE_DRIVER;
+            HostOwner = CY_FX_HOST_OWNER_MOUSE_DRIVER;
             return;
         }
     }
@@ -209,7 +208,7 @@ void CyFxApplnStart ()
         if (status == CY_U3P_SUCCESS)
         {
             glIsApplnActive = CyTrue;
-            glHostOwner = CY_FX_HOST_OWNER_PHONE_DRIVER;
+            HostOwner = CY_FX_HOST_OWNER_PHONE_DRIVER;
             CyU3PDebugPrint (6, "Smart phone driver is initialized, OutEp=0x%x, InEp=0x%x, EpSize=%d\n",Phone.outEp,Phone.inEp,Phone.epSize);
             return;
         }
@@ -230,7 +229,7 @@ enum_error:
 void CyFxApplnStop ()
 {
 	CyU3PDebugPrint (2, "CyFxApplnStop()\r\n");
-	switch (glHostOwner)
+	switch (HostOwner)
 	{
 		case CY_FX_HOST_OWNER_MOUSE_DRIVER:
 			CyFxMouseDriverDeInit ();
@@ -246,7 +245,7 @@ void CyFxApplnStop ()
     CyU3PUsbHostEpRemove (0);
     CyU3PUsbHostPortDisable ();
 
-    glHostOwner = CY_FX_HOST_OWNER_NONE;
+    HostOwner = CY_FX_HOST_OWNER_NONE;
 
     /* Clear state variables. */
     glIsApplnActive = CyFalse;

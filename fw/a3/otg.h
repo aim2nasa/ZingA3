@@ -16,6 +16,8 @@
 #define CY_FX_HOST_OWNER_MOUSE_DRIVER   (1)             /* Host controller associated with mouse driver. */
 #define CY_FX_HOST_OWNER_PHONE_DRIVER   (2)             /* Host controller associated with phone driver. */
 
+uint8_t HostOwner;										/* Current owner for the host controller. */
+
 void CyFxOtgEventCb (CyU3POtgEvent_t event,uint32_t input);
 CyU3PReturnStatus_t CyFxApplnInit (void);
 void CyFxApplnStart ();
