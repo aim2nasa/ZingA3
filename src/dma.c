@@ -192,6 +192,7 @@ void DMA_Normal_CtrlOut_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3P
 	switch (evtype)
 	{
 	case CY_U3P_DMA_CB_PROD_EVENT:
+		CyU3PDebugPrint (4, ">");
 #ifdef DMA_NORMAL_MANUAL
 	{
 		CyU3PReturnStatus_t status = CyU3PDmaChannelCommitBuffer (handle, input->buffer_p.count, 0);
@@ -215,6 +216,7 @@ void DMA_Normal_CtrlIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PD
 	switch (evtype)
 	{
 	case CY_U3P_DMA_CB_PROD_EVENT:
+		CyU3PDebugPrint (4, "<");
 #ifdef DMA_NORMAL_MANUAL
 	{
 		CyU3PReturnStatus_t status = CyU3PDmaChannelCommitBuffer (handle, input->buffer_p.count, 0);
