@@ -237,6 +237,7 @@ void DMA_Normal_CtrlIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PD
 
 void DMA_Normal_DataOut_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PDmaCBInput_t *input)
 {
+	CyU3PDebugPrint(6, "DMA_Normal_DataOut_Cb(%d)\r\n",evtype);
 	switch (evtype)
 	{
 	case CY_U3P_DMA_CB_PROD_EVENT:
@@ -261,6 +262,7 @@ void DMA_Normal_DataOut_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3P
 
 void DMA_Normal_DataIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PDmaCBInput_t *input)
 {
+	CyU3PDebugPrint(6, "DMA_Normal_DataIn_Cb(%d)\r\n",evtype);
 	switch (evtype)
 	{
 	case CY_U3P_DMA_CB_PROD_EVENT:
