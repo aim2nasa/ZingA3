@@ -116,18 +116,6 @@ PhoneDriverInit ()
     CyU3PDebugPrint (1, "PhoneDriverInit OK\n");
     return CY_U3P_SUCCESS;
 
-app_error:
-    if (glInEp != 0)
-    {
-        CyU3PUsbHostEpRemove (glInEp);
-        glInEp = 0;
-    }
-    if (glOutEp != 0)
-    {
-        CyU3PUsbHostEpRemove (glOutEp);
-        glOutEp = 0;
-    }
-
 enum_error:
 	CyU3PDebugPrint (1, "PhoneDriverInit failed\n");
     return CY_U3P_ERROR_FAILURE;
