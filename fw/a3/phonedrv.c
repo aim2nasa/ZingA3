@@ -10,35 +10,13 @@
 #include "Zing.h"
 #include "dma.h"
 
-uint8_t glInEp = 0;
-uint8_t glOutEp = 0;
-
-void
-PhoneDmaCb (CyU3PDmaChannel *ch,
-        CyU3PDmaCbType_t type,
-        CyU3PDmaCBInput_t *input)
-{
-	CyU3PDebugPrint (4, "PhoneDmaCb buffer(count:%d)\n",input->buffer_p.count);
-
-    if (type == CY_U3P_DMA_CB_PROD_EVENT)
-    {
-    	CyU3PReturnStatus_t status;
-    	if((status=Zing_Transfer_Send(&Dma.DataOut_.Channel_,input->buffer_p.buffer,input->buffer_p.count))!=CY_U3P_SUCCESS) {
-    		CyU3PDebugPrint (1, "[PhoneDmaCb] Zing_Transfer_Send error=0x%x\n",status);
-    	}else{
-    		CyU3PDebugPrint (1, "<");
-    	}
-    }
-}
-
 CyU3PReturnStatus_t
 PhoneDriverInit ()
 {
     uint16_t length, size, offset;
     CyU3PReturnStatus_t status;
     CyU3PUsbHostEpConfig_t epCfg;
-    CyU3PDmaChannelConfig_t dmaCfg;
-    uint16_t EpSize = 0;
+    EpSize = glInEp = glOutEp = 0;
 
     /* Read first four bytes of configuration descriptor to determine
      * the total length. */
@@ -135,49 +113,15 @@ PhoneDriverInit ()
         goto enum_error;
     }
 
-    /* Create a DMA channel for IN EP. */
-    CyU3PMemSet ((uint8_t *)&dmaCfg, 0, sizeof(dmaCfg));
-    //dmaCfg.size = USB_EP_MAX_SIZE;
-    dmaCfg.size = EpSize;
-    dmaCfg.count = 1;
-    dmaCfg.prodSckId = (CyU3PDmaSocketId_t)(CY_U3P_UIB_SOCKET_PROD_0 + (0x0F & glInEp));
-    dmaCfg.consSckId = CY_U3P_CPU_SOCKET_CONS;
-    dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-    dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT;
-    dmaCfg.cb = PhoneDmaCb;
-    dmaCfg.prodHeader = 0;
-    dmaCfg.prodFooter = 0;
-    dmaCfg.consHeader = 0;
-    dmaCfg.prodAvailCount = 0;
-    status = CyU3PDmaChannelCreate (&glDataInCh, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaCfg);
-    if (status != CY_U3P_SUCCESS)
-    {
-        CyU3PDebugPrint (1, "[DriverInit] CyU3PDmaChannelCreate(glDataInCh) error(%d)\n", status);
-        goto app_error;
-    }
-
-    /* Create a DMA channel for OUT EP. */
-    dmaCfg.notification = 0;
-    dmaCfg.cb = 0;
-    dmaCfg.prodSckId = CY_U3P_CPU_SOCKET_PROD;
-    dmaCfg.consSckId = (CyU3PDmaSocketId_t)(CY_U3P_UIB_SOCKET_CONS_0 + (0x0F & glOutEp));
-    status = CyU3PDmaChannelCreate (&glDataOutCh, CY_U3P_DMA_TYPE_MANUAL_OUT, &dmaCfg);
-    if (status != CY_U3P_SUCCESS)
-    {
-        CyU3PDebugPrint (1, "[DriverInit] CyU3PDmaChannelCreate(glDataOutCh) error(%d)\n", status);
-        goto app_error;
-    }
-
-    return status;
+    CyU3PDebugPrint (1, "PhoneDriverInit OK\n");
+    return CY_U3P_SUCCESS;
 
 app_error:
-    CyU3PDmaChannelDestroy (&glDataInCh);
     if (glInEp != 0)
     {
         CyU3PUsbHostEpRemove (glInEp);
         glInEp = 0;
     }
-    CyU3PDmaChannelDestroy (&glDataOutCh);
     if (glOutEp != 0)
     {
         CyU3PUsbHostEpRemove (glOutEp);
@@ -185,28 +129,25 @@ app_error:
     }
 
 enum_error:
+	CyU3PDebugPrint (1, "PhoneDriverInit failed\n");
     return CY_U3P_ERROR_FAILURE;
 }
 
 void
 PhoneDriverDeInit ()
 {
-    CyU3PDmaChannelReset (&glDataInCh);
     if (glInEp != 0)
     	CyU3PUsbHostEpAbort (glInEp);
-
-    CyU3PDmaChannelReset (&glDataOutCh);
 
     if (glOutEp != 0)
     	CyU3PUsbHostEpAbort (glOutEp);
 
-    CyU3PDmaChannelDestroy (&glDataInCh);
     if (glInEp != 0)
     {
         CyU3PUsbHostEpRemove (glInEp);
         glInEp = 0;
     }
-    CyU3PDmaChannelDestroy (&glDataOutCh);
+
     if (glOutEp != 0)
     {
         CyU3PUsbHostEpRemove (glOutEp);

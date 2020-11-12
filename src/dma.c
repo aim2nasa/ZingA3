@@ -104,13 +104,7 @@ void DMA_Sync_DataIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PDma
 {
 	switch (evtype)
 	{
-	CyU3PReturnStatus_t status;
 	case CY_U3P_DMA_CB_PROD_EVENT:
-		CyU3PDebugPrint (1, "[DMA_Sync_DataIn_Cb] glDataOutCh=%d\n", glDataOutCh);
-    	if((status=Zing_Transfer_Send(&glDataOutCh,input->buffer_p.buffer,input->buffer_p.count))!=CY_U3P_SUCCESS) {
-    		CyU3PDebugPrint (1, "[DMA_Sync_DataIn_Cb] Zing_Transfer_Send error=0x%x\n",status);
-    	}
-
 		CyU3PDebugPrint (6, "DMA_Sync_DataIn_Cb->CY_U3P_DMA_CB_PROD_EVENT, buffer(count:%d,size:%d,status:%d)\n",
 				input->buffer_p.count,input->buffer_p.size,input->buffer_p.status);
 
