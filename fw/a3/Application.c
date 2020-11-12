@@ -180,14 +180,15 @@ void ApplicationThread(uint32_t Value)
 #endif	//OTG
 
 #ifndef OTG
-	uint32_t loop = 0;
+//	uint32_t loop = 0;
+
+	CyU3PDebugPrint(4,"[App] (%s)(%s)\r\n",Zing_GetHRCP()?"PPC":"DEV",dmaModeStr(Dma.Mode_));
 	while (1)
 	{
-		CyU3PDebugPrint(4,"[App] (%s)(%s) Loop:%d ConIn:%d ConOut:%d DataIn:%d DataOut:%d\r",
-						Zing_GetHRCP()?"PPC":"DEV",dmaModeStr(Dma.Mode_),
-						loop++,Dma.ControlIn_.Count_,Dma.ControlOut_.Count_,Dma.DataIn_.Count_,Dma.DataOut_.Count_);
-
-		CyU3PThreadSleep(100);
+//		CyU3PDebugPrint(4,"[App] (%s)(%s) Loop:%d ConIn:%d ConOut:%d DataIn:%d DataOut:%d\r",
+//						Zing_GetHRCP()?"PPC":"DEV",dmaModeStr(Dma.Mode_),
+//						loop++,Dma.ControlIn_.Count_,Dma.ControlOut_.Count_,Dma.DataIn_.Count_,Dma.DataOut_.Count_);
+		CyU3PThreadSleep(1000);
 	}
 #else
 	CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
