@@ -8,11 +8,11 @@ void CheckStatus(char* StringPtr, CyU3PReturnStatus_t Status)
 {
 	if (DebugTxEnabled)				// Need to wait until ConsoleOut is enabled
 	{
-		if (Status == CY_U3P_SUCCESS) CyU3PDebugPrint(4, "%s OK\n", StringPtr);
+		if (Status == CY_U3P_SUCCESS) CyU3PDebugPrint(4, "%s OK\r\n", StringPtr);
 		else
 		{
 			// else hang here
-			CyU3PDebugPrint(4, "\r\n%s failed, Status = %d\n", StringPtr, Status);
+			CyU3PDebugPrint(4, "\r\n%s failed, Status = %d\r\n", StringPtr, Status);
 			while (1)
 			{
 				CyU3PDebugPrint(4, "?");
