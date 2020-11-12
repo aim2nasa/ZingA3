@@ -267,15 +267,28 @@ void DMA_Normal_DataIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PD
 		CyU3PDebugPrint (4, "i");
 #ifdef DMA_NORMAL_MANUAL
 	{
-		CyU3PReturnStatus_t status = CyU3PDmaChannelCommitBuffer (handle, input->buffer_p.count, 0);
-        if (status != CY_U3P_SUCCESS){
-            CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
-        }else{
-    		CyU3PDebugPrint (6, "DMA_Normal_DataIn_Cb->CY_U3P_DMA_CB_PROD_EVENT, buffer(count:%d,size:%d,status:%d)\n",
-    				input->buffer_p.count,input->buffer_p.size,input->buffer_p.status);
-    		//for(int i=0;i<7;i++) CyU3PDebugPrint (6,"%x ", input->buffer_p.buffer[i]);
-    		//CyU3PDebugPrint(6, "\n");
-        }
+    	for(int i=0;i<input->buffer_p.count;i++) CyU3PDebugPrint (6,"%x ", input->buffer_p.buffer[i]);
+    	CyU3PDebugPrint(6, "\n");
+    	if (input->buffer_p.buffer[0]==0x50 &&
+    		input->buffer_p.buffer[1]==0x49 &&
+    		input->buffer_p.buffer[2]==0x4E &&
+    		input->buffer_p.buffer[3]==0x47 &&
+    		input->buffer_p.buffer[4]==0x20 &&
+    		input->buffer_p.buffer[5]==0x4F &&
+    		input->buffer_p.buffer[6]==0x4E )
+    	{
+    		/* PING ON message received */
+            CyU3PDmaChannelDiscardBuffer (handle);	//Discard the current buffer to free it
+    		CyU3PDebugPrint (4, ".");
+    	}else{
+    		/* Non PING ON message received */
+    		CyU3PReturnStatus_t status = CyU3PDmaChannelCommitBuffer (handle, input->buffer_p.count, 0);
+            if (status != CY_U3P_SUCCESS){
+                CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
+            }else{
+            	CyU3PDebugPrint (4, "=");
+            }
+    	}
 	}
 #endif
 		Dma.DataIn_.Count_++;
