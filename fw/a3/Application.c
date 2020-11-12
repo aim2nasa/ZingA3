@@ -11,6 +11,7 @@
 #include "dma.h"
 #include "ControlCh.h"
 #include "USB_EP0.h"
+#include "phonedrv.h"
 
 CyBool_t IsApplnActive = CyFalse;		//Whether the application is active or not
 
@@ -226,7 +227,29 @@ void ApplicationThread(uint32_t Value)
 					/* If following conditions are met, then the phone is successfully initialized.
 					 * it's time to create DMA Channel between PIB-USB */
 					if (glIsApplnActive && HostOwner == CY_FX_HOST_OWNER_PHONE_DRIVER) {
+						CyU3PDmaChannelConfig_t dmaCfg;
+						dataChannelReset(Dma.DataIn_.EP_,Dma.DataOut_.EP_);
+					    CheckStatus("[App] DMA GPIF-Phone DataOut",createChannel("DmaNormalPhone.DataOut)",
+					                        &dmaCfg,
+					                        Phone.epSize,
+					                        8,
+					                        (CyU3PDmaSocketId_t)(CY_U3P_UIB_SOCKET_PROD_0 + (0x0F & Phone.inEp)),
+					                        CY_U3P_PIB_SOCKET_2,
+					                        CY_U3P_DMA_CB_PROD_EVENT,
+					                        DMA_Normal_DataOut_Cb,
+					                        &Dma.DataOut_.Channel_,
+					                        CY_U3P_DMA_TYPE_AUTO_SIGNAL));
 
+					    CheckStatus("[App] DMA GPIF-Phone DataIn",createChannel("DmaNormalPhone.DataIn",
+					                        &dmaCfg,
+					                        Phone.epSize,
+					                        8,
+					                        CY_U3P_PIB_SOCKET_3,
+					                        (CyU3PDmaSocketId_t)(CY_U3P_UIB_SOCKET_CONS_0 + (0x0F & Phone.outEp)),
+					                        CY_U3P_DMA_CB_PROD_EVENT,
+					                        DMA_Normal_DataIn_Cb,
+					                        &Dma.DataIn_.Channel_,
+					                        CY_U3P_DMA_TYPE_AUTO_SIGNAL));
 					}
 				}
 				else

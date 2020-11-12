@@ -65,6 +65,20 @@ CyU3PReturnStatus_t createChannel(const char* name,
 	return CY_U3P_SUCCESS;
 }
 
+void dataChannelReset(uint8_t dataIn,uint8_t dataOut)
+{
+	//Abort & destroy DMAs
+	CyU3PDmaChannelAbort(&Dma.DataOut_.Channel_);
+	CyU3PDmaChannelAbort(&Dma.DataIn_.Channel_);
+
+	CyU3PDmaChannelDestroy(&Dma.DataOut_.Channel_);
+	CyU3PDmaChannelDestroy(&Dma.DataIn_.Channel_);
+
+	//Flush the Endpoint memory
+	CyU3PUsbFlushEp(dataIn);
+	CyU3PUsbFlushEp(dataOut);
+}
+
 void channelReset(uint8_t controlIn,uint8_t controlOut,uint8_t dataIn,uint8_t dataOut)
 {
 	//Abort & destroy DMAs
@@ -224,6 +238,7 @@ void DMA_Normal_DataOut_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3P
 	switch (evtype)
 	{
 	case CY_U3P_DMA_CB_PROD_EVENT:
+		CyU3PDebugPrint (4, "o");
 #ifdef DMA_NORMAL_MANUAL
 	{
 		CyU3PReturnStatus_t status = CyU3PDmaChannelCommitBuffer (handle, input->buffer_p.count, 0);
@@ -247,6 +262,7 @@ void DMA_Normal_DataIn_Cb(CyU3PDmaChannel *handle,CyU3PDmaCbType_t evtype,CyU3PD
 	switch (evtype)
 	{
 	case CY_U3P_DMA_CB_PROD_EVENT:
+		CyU3PDebugPrint (4, "i");
 #ifdef DMA_NORMAL_MANUAL
 	{
 		CyU3PReturnStatus_t status = CyU3PDmaChannelCommitBuffer (handle, input->buffer_p.count, 0);
