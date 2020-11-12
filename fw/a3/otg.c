@@ -166,8 +166,8 @@ void CyFxApplnStart ()
         goto enum_error;
     }
 
-    CyU3PDebugPrint (6, "Ep0Buffer========\r\n");
-    for(int i=0;i<32;i++) CyU3PDebugPrint (6,"%x ", glEp0Buffer[i]);
+    CyU3PDebugPrint (6, "full configuration descriptor\r\n");
+    for(int i=0;i<length;i++) CyU3PDebugPrint (6,"%x ", glEp0Buffer[i]);
     CyU3PDebugPrint(6, "\r\n");
 
 	status = CyFxSendSetupRqt(0x00, CY_U3P_USB_SC_SET_CONFIGURATION,
