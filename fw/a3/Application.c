@@ -239,7 +239,11 @@ void ApplicationThread(uint32_t Value)
 					                        CY_U3P_DMA_CB_PROD_EVENT,
 					                        DMA_Normal_DataOut_Cb,
 					                        &Dma.DataOut_.Channel_,
-					                        CY_U3P_DMA_TYPE_AUTO_SIGNAL));
+#ifdef DMA_NORMAL_MANUAL
+					                        CY_U3P_DMA_TYPE_MANUAL));
+#else
+					    					CY_U3P_DMA_TYPE_AUTO_SIGNAL));
+#endif
 
 					    CheckStatus("[App] DMA GPIF-Phone DataIn",createChannel("DmaNormalPhone.DataIn",
 					                        &dmaCfg,
@@ -250,7 +254,11 @@ void ApplicationThread(uint32_t Value)
 					                        CY_U3P_DMA_CB_PROD_EVENT,
 					                        DMA_Normal_DataIn_Cb,
 					                        &Dma.DataIn_.Channel_,
-					                        CY_U3P_DMA_TYPE_AUTO_SIGNAL));
+#ifdef DMA_NORMAL_MANUAL
+					                        CY_U3P_DMA_TYPE_MANUAL));
+#else
+					    					CY_U3P_DMA_TYPE_AUTO_SIGNAL));
+#endif
 					}
 				}
 				else
